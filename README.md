@@ -1,4 +1,4 @@
-es6-boilerplate
+Mini Game Enigne
 ===============
 
-Express + ES6 + Stylus boilerplate
+This is a little game engine made on top of threejs and oimo.
