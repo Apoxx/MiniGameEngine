@@ -10,8 +10,8 @@
     "stylus": "^0.48.1",
     "nib": "^1.0.3",
     "jade": "^1.5.0",
-    "jade-6to5": "0.0.2",
-    "6to5-browserify": "0.0.10",
+    "jade-6to5": "*",
+    "6to5-browserify": "*",
     "6to5": "*",
     "watchify": "^1.0.6",
     "three": "^0.66.4"
