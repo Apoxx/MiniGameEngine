@@ -1,4 +1,4 @@
-require('6to5/polyfill')
+//require('6to5/polyfill')
 import Game from './Game'
 
 var game = new Game()

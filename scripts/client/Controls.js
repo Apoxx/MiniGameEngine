@@ -9,16 +9,11 @@ import {
 
 export default class Controls {
 	constructor(game) {
-		this.acceleration = 0.5
-		this.speed = 0
-		this.speedStrafe = 0
-		this.speedY = 0
-		this.resistance = 0.9
-		this.gravity = 9.80
-		this.isOnFloor = false
-		this.raycaster = new Raycaster();
 		this.game = game
 		this.keysDown = {}
+		this.frontSpeed = 0
+		this.sideSpeed = 0
+		this.acceleration = 1
 		this.setupMouse()
 		this.setupKeyboard()
 	}
@@ -41,34 +36,34 @@ export default class Controls {
 		})
 	}
 
-	update() {		
-		this.raycaster.set(this.game.player.position, new Vector3(0, -1, 0).normalize())
-		var floor = this.raycaster.intersectObjects( this.game.scene.children, true )[0]
-		this.isOnFloor = false
-		if(floor) {
-			if (floor.distance < 1000) this.isOnFloor = true
-		}
-		if(this.keysDown[38]) this.speed += this.acceleration
-		if(this.keysDown[40]) this.speed -= this.acceleration
-		if(this.keysDown[39]) this.speedStrafe += this.acceleration
-		if(this.keysDown[37]) this.speedStrafe -= this.acceleration
+	update() {
+		this.front = 0
+		this.side = 0
+		this.jump = false
+
+		if(this.keysDown[38]) this.front = 1
+		if(this.keysDown[40]) this.front = -1
+		if(this.keysDown[39]) this.side = 1
+		if(this.keysDown[37]) this.side = -1
 		if(this.keysDown[96]) {
-			if(this.isOnFloor) {
-				this.isOnFloor = false
-				this.speedY = 20
+			if(this.game.player.isOnFloor()) {
+				console.log('coucou')
+				this.jump = true
 			}
 		}
+		var dir = Controls.getDirectionVector(this.game.player.camera, this.front * 3, this.side * 3)
+		var y = this.game.player.body.body.linearVelocity.y
+		this.game.player.body.body.linearVelocity.scaleEqual(0.90)
+		this.game.player.body.body.linearVelocity.y = y
+		if(this.jump) dir.y = 20
+		this.game.player.body.body.linearVelocity.y -= 0.5
+		this.game.player.body.body.linearVelocity.addEqual(dir)
+	}
 
-		this.speed *= this.resistance
-		this.speedStrafe *= this.resistance
-		
-
-		var direction = new Vector3(0, 0, -1).applyQuaternion(this.game.player.camera.quaternion).normalize()
-		
-		var strafe = direction.clone().cross(new Vector3(0, 1, 0)).multiplyScalar(10 * this.speedStrafe)
-		var face = direction.clone().multiply(new Vector3(1, 0, 1)).multiplyScalar(10 * this.speed)
-		var goVector = face.add(strafe).add(new Vector3(0, this.speedY, 0))
-
-		this.game.player.body.setPosition(this.game.player.body.getPosition().addEqual(goVector))
+	static getDirectionVector(camera, frontSpeed, sideSpeed) {
+		var direction = new Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize()		
+		var strafe = direction.clone().cross(new Vector3(0, 1, 0)).multiplyScalar(sideSpeed)
+		var face = direction.clone().multiply(new Vector3(1, 0, 1)).multiplyScalar(frontSpeed)
+		return face.add(strafe)
 	}
 }
