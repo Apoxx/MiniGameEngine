@@ -2,28 +2,29 @@ import Entity from './Entity'
 
 import {
 	BoxGeometry,
+	SphereGeometry,
 	MeshBasicMaterial,
 	Raycaster,
 	Vector3,
-	Box3
+	Box3,
+	Object3D,
+	Mesh
 } from 'three'
 
 export default class Player extends Entity {
 	constructor(game) {
 		this.game = game
 		this.camera = game.camera
-		super({geometry: null, material: null , physic: {
-			type: 'sphere',
-			world: game.world,
-			move: true,
-			size: [500, 500, 500],
-			config: [
-			  0.1
-			]
-		}})
+		var representation = new Object3D()
+		var geometry = new SphereGeometry(100)
+		representation.add(new Mesh(geometry))
+		super(representation)
+		this.name = 'player'
+		this.addBody(game.world, 'sphere', true)
+		this.visible = false
 		this.add(this.camera)
-		this.camera.position.set(0, 500, 0)
-		this.body.body.allowSleep = false
+		this.camera.position.set(0, 100, 0)
+		//this.body.allowSleep = false
 		this.raycaster = new Raycaster()
 
 	}
@@ -38,7 +39,8 @@ export default class Player extends Entity {
 		this.raycaster.set(this.position, new Vector3(0, -1, 0))
 		var floor = this.raycaster.intersectObjects( this.game.scene.children, true )[0]
 		if(floor) {
-			if(floor.distance < 275) return true
+			console.log(floor.distance)
+			if(floor.distance < 200) return true
 		}
 		return false
 	}

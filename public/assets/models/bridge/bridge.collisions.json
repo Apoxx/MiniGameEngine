@@ -1,0 +1,92 @@
+{
+	"metadata": {
+		"version": 4.3,
+		"type": "Object",
+		"generator": "ObjectExporter"
+	},
+	"geometries": [
+		{
+			"uuid": "8F230405-B789-4D67-A8F4-C9D68889D1BB",
+			"type": "BoxGeometry",
+			"width": 79.4,
+			"height": 82.18,
+			"depth": 39.04,
+			"widthSegments": 1,
+			"heightSegments": 1,
+			"depthSegments": 1
+		},
+		{
+			"uuid": "D0CC96E0-9146-4339-9B0F-483F56A962C9",
+			"type": "BoxGeometry",
+			"width": 76.74,
+			"height": 26.14,
+			"depth": 350,
+			"widthSegments": 1,
+			"heightSegments": 1,
+			"depthSegments": 1
+		}],
+	"materials": [
+		{
+			"uuid": "D15E4CD1-C7D6-4BA6-8997-32F5CFA9452C",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"ambient": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30,
+			"opacity": 1,
+			"transparent": false,
+			"wireframe": false
+		},
+		{
+			"uuid": "7352388D-0422-4E5F-9581-2EA003C74E9F",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"ambient": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30,
+			"opacity": 1,
+			"transparent": false,
+			"wireframe": true
+		}],
+	"object": {
+		"uuid": "96108462-53C9-4B8C-BED2-D3DFFAF9E170",
+		"name": "bridgeCollisions",
+		"type": "Object3D",
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,41.13311004638672,1],
+		"children": [
+			{
+				"uuid": "A9C477BA-0FC4-49E3-B8D7-D6C5205E467E",
+				"name": "pillar3",
+				"type": "Mesh",
+				"geometry": "8F230405-B789-4D67-A8F4-C9D68889D1BB",
+				"material": "D15E4CD1-C7D6-4BA6-8997-32F5CFA9452C",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-46.900001525878906,8.020000457763672,-70.68000030517578,1]
+			},
+			{
+				"uuid": "1D222BB4-4A9D-455B-B816-7704F7BA1721",
+				"name": "pillar2",
+				"type": "Mesh",
+				"geometry": "8F230405-B789-4D67-A8F4-C9D68889D1BB",
+				"material": "D15E4CD1-C7D6-4BA6-8997-32F5CFA9452C",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-46.900001525878906,8.020000457763672,40.470001220703125,1]
+			},
+			{
+				"uuid": "4D870E40-62E6-494E-B6FE-154935D33D9F",
+				"name": "pillar1",
+				"type": "Mesh",
+				"geometry": "8F230405-B789-4D67-A8F4-C9D68889D1BB",
+				"material": "D15E4CD1-C7D6-4BA6-8997-32F5CFA9452C",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-46.900001525878906,8.020000457763672,165.8800048828125,1]
+			},
+			{
+				"uuid": "40AFDE83-712E-4EE9-9D87-AB5AC2363150",
+				"name": "ground",
+				"type": "Mesh",
+				"geometry": "D0CC96E0-9146-4339-9B0F-483F56A962C9",
+				"material": "7352388D-0422-4E5F-9581-2EA003C74E9F",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-47.689998626708984,42.31999969482422,7.645340919494629,1]
+			}]
+	}
+}

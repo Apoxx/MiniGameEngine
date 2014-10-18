@@ -19,11 +19,11 @@ export default class Controls {
 	}
 
 	setupMouse(){
-		this.game.player.camera.rotation.order = "YXZ"
+		this.game.camera.rotation.order = "YXZ"
 		this.game.canvas.addEventListener('click', (event) => this.game.canvas.requestPointerLock())
 		this.game.canvas.addEventListener('mousemove', (event) => {
-			this.game.player.camera.rotation.x -= event.movementY * 0.002
-			this.game.player.camera.rotation.y -= event.movementX * 0.002
+			this.game.camera.rotation.x -= event.movementY * 0.002
+			this.game.camera.rotation.y -= event.movementX * 0.002
 		})
 	}
 
@@ -47,17 +47,16 @@ export default class Controls {
 		if(this.keysDown[37]) this.side = -1
 		if(this.keysDown[96]) {
 			if(this.game.player.isOnFloor()) {
-				console.log('coucou')
 				this.jump = true
 			}
 		}
-		var dir = Controls.getDirectionVector(this.game.player.camera, this.front * 3, this.side * 3)
-		var y = this.game.player.body.body.linearVelocity.y
-		this.game.player.body.body.linearVelocity.scaleEqual(0.90)
-		this.game.player.body.body.linearVelocity.y = y
-		if(this.jump) dir.y = 20
-		this.game.player.body.body.linearVelocity.y -= 0.5
-		this.game.player.body.body.linearVelocity.addEqual(dir)
+		var dir = Controls.getDirectionVector(this.game.player.camera, this.front, this.side)
+		this.game.player.body.body.linearVelocity.add(this.game.player.body.body.linearVelocity, dir)
+		if(this.jump) this.game.player.body.body.linearVelocity.y = 10
+		this.game.player.body.body.linearVelocity.x *= 0.90
+		this.game.player.body.body.linearVelocity.y 
+		this.game.player.body.body.linearVelocity.z *= 0.90
+
 	}
 
 	static getDirectionVector(camera, frontSpeed, sideSpeed) {

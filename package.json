@@ -14,7 +14,8 @@
     "6to5-browserify": "*",
     "6to5": "*",
     "watchify": "^1.0.6",
-    "three": "^0.66.4"
+    "three": "^0.66.4",
+    "cannon": "^0.6.0"
   },
   "devDependencies": {
     "gulp": "^3.8.7",

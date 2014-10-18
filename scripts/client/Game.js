@@ -1,19 +1,32 @@
 //well ...
 window.THREE = require('three')
 
+var Stats = require('./Stats')
+var stats = new Stats();
+stats.setMode(0); // 0: fps, 1: ms
+
+// Align top-left
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.left = '0px';
+stats.domElement.style.top = '0px';
+
+document.body.appendChild( stats.domElement );
+
 import {
 	Scene,
 	PerspectiveCamera,
 	WebGLRenderer,
 	AmbientLight,
 	BoxGeometry,
+	SphereGeometry,
 	MeshBasicMaterial,
 	MeshLambertMaterial,
 	MeshPhongMaterial,
 	Object3D,
 	Vector3,
 	ImageUtils,
-	RepeatWrapping
+	RepeatWrapping,
+	Mesh
 } from 'three'
 
 import {
@@ -74,13 +87,12 @@ export default class Game {
 		this.setUpWorldAndScene()
 
 		this.player = new Player(this)
+		this.player.setPosition(0,500,0)
 		this.scene.add(this.player)
-
-		this.player.setPosition(0, 1000, 0)
 
 		this.controls = new Controls(this)
 
-		var floorGeo = new BoxGeometry(10000, 1000, 10000)
+		var floorGeo = new BoxGeometry(10000, 100, 10000)
 		var t = ImageUtils.loadTexture('assets/textures/stone.png')
 		t.wrapS = t.wrapT = RepeatWrapping
 		t.repeat.set(32, 32)
@@ -88,19 +100,76 @@ export default class Game {
 		n.wrapS = n.wrapT = RepeatWrapping
 		n.repeat.set(32, 32)
 		var floorMat = new MeshPhongMaterial({map: t, normalMap: n})
-		var floor = new Entity({geometry: floorGeo, material: floorMat})
-		.addBody({
-			world: this.world,
-			type: 'box',
-			move: false
-		})
-		.setPosition(0, -1000, 0)
-
+		var container = new Object3D()
+		container.add(new Mesh(floorGeo, floorMat))
+		var floor = new Entity(container)
+		floor.addBody(this.world, 'box', false)
 		this.scene.add(floor)
+
+		this.assets.objects.house.children[0].material.map = ImageUtils.loadTexture('assets/models/house/house.jpg')
+
+		var house = new Entity(this.assets.objects.house)
+		house.scale.set(50, 50, 50)
+		house.addBody(this.world, 'box', false)
+
+		this.scene.add(house)
+
+
+		var ball = new Entity(new Mesh(new SphereGeometry(100)))
+		ball.addBody(this.world, 'sphere', true)
+		this.scene.add(ball)
+		ball.setPosition(0, 1000, 0)
+
+
+
+		var ball1 = new Mesh(new SphereGeometry(100))
+		var ball2 = new Mesh(new SphereGeometry(100))
+		ball2.position.z = 200
+
+		var c = new Object3D()
+		c.add(ball1, ball2)
+		var doubleBall = new Entity(ball1)
+		doubleBall.add(ball2)
+		doubleBall.position.y = 500
+		doubleBall.position.x = 2000
+
+		doubleBall.addBody(this.world, 'box', true)
+
+		doubleBall.setPosition(0, 500, 0)
+
+		this.scene.add(doubleBall)
+
+
+		/*var sphereMat = new MeshBasicMaterial()
+		var sphereGeo = new SphereGeometry(100)
+		var model = new Mesh(sphereGeo, sphereMat)
+		var model2 = new Mesh(sphereGeo, sphereMat)
+		model2.position.x = 200
+
+		var cont = new Object3D()
+		cont.add(model)
+		cont.add(model2)
+
+		for(var i = 0; i < 10 ; i ++) {
+		    var sphere = new Entity(cont)
+			sphere.addBody({
+				world: this.world,
+				move: true
+			})
+
+			this.scene.add(sphere)
+		}*/
+
+		/*var box = new Box(1, 1, 1)
+		box.scale.set(3, 1, 3)
+
+		box.setPosition(0, 0, -10)
+
+		this.scene.add(box)*/
 
 		//this.assets.objects.house.scale.set(10, 10, 10)
 
-		this.assets.objects.house.children[0].material.map = ImageUtils.loadTexture('assets/models/house/house.jpg')
+		//this.assets.objects.house.children[0].material.map = ImageUtils.loadTexture('assets/models/house/house.jpg')
 
 		/*var bridge = new Entity({source: this.assets.objects.bridge, physic: {
 			world: this.world,
@@ -115,7 +184,7 @@ export default class Game {
 		//bodyDebugObject(bridge.body)
 
 		//this.assets.objects.houseCollisions.scale.set(100, 100, 100)
-		var entity = new Entity({source: this.assets.objects.house})
+		/*var entity = new Entity({source: this.assets.objects.house})
 		this.assets.objects.houseCollisions.scale.set(10, 10, 10)
 		entity.scale.set(100, 100, 100)
 		entity.addBody({
@@ -126,24 +195,19 @@ export default class Game {
 		})
 		this.scene.add(entity)
 
-		entity.setPosition(0, -500, 0)
+		entity.setPosition(0, -500, 0)*/
 
 		//console.log(this.assets.objects.houseCollisions)
 
-		for(var i = 0 ; i < 10 ; i++) {
-			var box = new Box(Math.random(), Math.random(), Math.random())
-			box.scale.set(100, 100, 100)
-			box.addBody({
-				world: this.world,
-				type: 'box',
-				move: true
-			})
-			.setPosition(i * Math.random() + 100 , 1000 + i * 1000, i * Math.random())
+		/*for(var i = 0 ; i < 1 ; i++) {
+			var box = new Box()
+			box.addBody(this.world, 'box', false)
+			.setPosition(0, 10 + i * 10, 0)
 			this.scene.add(box);
-		}
+		}*/
 		
 
-		for(var i = 0 ; i < 10 ; i++) {
+		/*for(var i = 0 ; i < 10 ; i++) {
 			var card = new Entity({geometry: this.assets.three.card.geometry, material: this.assets.three.card.materials[0]})
 			card.scale.set(100, 100, 100)
 			card.addBody({
@@ -153,21 +217,17 @@ export default class Game {
 			})
 			.setPosition(i * Math.random() + 200 , 1000 + i * 1000, i * Math.random())
 			this.scene.add(card);
-		}
+		}*/
 
-		for(var i = 0 ; i < 10 ; i++) {
-			var tonneau = new Entity({geometry: this.assets.three.tonneau.geometry, material: this.assets.three.tonneau.materials[0]})
-			tonneau.scale.set(150, 150, 150)
-			tonneau.addBody({
-				world: this.world,
-				type: 'cylinder',
-				move: true
-			})
-			tonneau.setPosition(i * Math.random() , 1000 + i * 1000, i * Math.random())
+		for(var i = 0 ; i < 1 ; i++) {
+			var tonneau = new Entity(new Mesh(this.assets.three.tonneau.geometry, this.assets.three.tonneau.materials[0]))
+			tonneau.scale.set(100, 100, 100)
+			tonneau.addBody(this.world, 'sphere', true)
+			tonneau.setPosition(0, 1000, 0)
 			this.scene.add(tonneau);
 		}
 		
-		for(var i = 0 ; i < 10 ; i++) {
+		/*for(var i = 0 ; i < 10 ; i++) {
 			var catapulte = new Entity({geometry: this.assets.three.catapulte.geometry, material: this.assets.three.catapulte.materials[0]})
 			catapulte.scale.set(100, 100, 100)
 			catapulte.addBody({
@@ -177,7 +237,7 @@ export default class Game {
 			})
 			catapulte.setPosition(i * Math.random() + 300 , 1000 + i * 1000, i * Math.random())
 			this.scene.add(catapulte);
-		}
+		}*/
 
 
 
@@ -189,8 +249,10 @@ export default class Game {
 		var prevTime = 0
 		var loop = (time) => {
 			window.requestAnimationFrame(loop)
+			stats.begin();
 			this.update(time, time - prevTime)
 			this.render(time, time - prevTime)
+			stats.end();
 			prevTime = time
 		}
 		window.requestAnimationFrame(loop)
@@ -217,13 +279,13 @@ export default class Game {
 	}
 
 	setUpWorldAndScene() {
+
 		this.world = new World(1/60, 2, 8, false)
-		this.world.gravity = new Vec3(0, -9.8, 0)
-		this.world.worldscale(100)
+		this.world.gravity = new Vec3(0,-9.82,0)
 
 		this.scene = new Scene()
 
-		this.camera = new PerspectiveCamera(35, this.width / this.height, 100, 100000 )
+		this.camera = new PerspectiveCamera(35, this.width / this.height, 10, 10000 )
 
 		this.renderer = new WebGLRenderer({canvas: this.canvas, antialias : true})
 
