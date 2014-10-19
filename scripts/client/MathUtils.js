@@ -49,8 +49,6 @@ export function bodyDebugObject(body, scale) {
 		shape = shape.next
 		shapes.push(shape)
 	}*/
-
-	console.log(shapes)
 	shapes.forEach((shape) => {
 		if(shape instanceof BoxShape){
 		 var geometry = new BoxGeometry(shape.width, shape.height, shape.depth)

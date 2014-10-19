@@ -12,7 +12,10 @@ import {
 } from 'three'
 
 import {
-	Body
+	Body,
+	BODY_STATIC,
+	BODY_DYNAMIC,
+	WORLD_SCALE
 } from 'oimo'
 
 import {
@@ -35,7 +38,6 @@ export default class Entity extends Object3D {
 	}
 
 	addBody(world, type = 'box', move) {
-		console.log(this)
 		var obj = this.clone()
 		obj.traverse((child) => {
 			if(child instanceof Light) obj.remove(child)
@@ -45,30 +47,36 @@ export default class Entity extends Object3D {
 		var positions = []
 		var rotations = []
 		var sizes = []
-		obj.children.forEach(child => {
+
+		obj.children.forEach((child, id) => {
+
 			var box = new Box3().setFromObject(child)
-			var {x: w, y: h, z: d} = box.max.sub(box.min)
-			var posX = box.min.x + w / 2
-			var posY = box.min.y + h / 2
-			var posZ = box.min.z + d / 2
+			var {x: w, y: h, z: d} = box.max.sub(box.min)			
 
-			w *= obj.scale.x
-			h *= obj.scale.y
-			d *= obj.scale.z
 
-			if(child.geometry instanceof SphereGeometry) {
-				console.log('shpere')
-				types.push('sphere')
-				w /= 2
-				h /= 2
-				d /= 2
-			} else {
-				types.push('box')
-			}
-			sizes.push(w, h, d)
-			positions.push(posX , posY, posZ)
 			var {x, y, z} = new Euler().setFromQuaternion(child.quaternion)
 			rotations.push(x, y, z)
+
+			if(child.geometry instanceof SphereGeometry) {
+				types.push('sphere')
+				child.geometry.computeBoundingSphere()
+				w = child.geometry.boundingSphere.radius
+				h = child.geometry.boundingSphere.radius
+				d = child.geometry.boundingSphere.radius
+			} else {
+				types.push('box')
+				if(child.geometry instanceof BoxGeometry) {
+					child.geometry.computeBoundingBox()
+					var bb = child.geometry.boundingBox.max.sub(child.geometry.boundingBox.min)
+
+					w = bb.x
+					h = bb.y
+					d = bb.z
+
+				}
+			}
+			positions.push(child.position.x * this.scale.x, child.position.y * this.scale.y, child.position.z * this.scale.z)
+			sizes.push(w * this.scale.x, h * this.scale.y, d * this.scale.z)
 		})
 
 		this.body = new Body({
@@ -76,9 +84,22 @@ export default class Entity extends Object3D {
 			move,
 			type: types,
 			size: sizes,
-			rot: rotations.map(x => x * 180 / Math.PI),
-			pos: positions
+			pos: positions//,
+			//rot: rotations.map(x => x * 180 / Math.PI)
 		})
+		this.body.body.shapes.forEach((shape, id) => {
+			shape.relativeRotation = quaternionToMat33(this.children[id].quaternion)
+		})
+
+		//var mode = move ? BODY_DYNAMIC : BODY_STATIC
+
+		//this.body.body.setupMass(mode)
+
+		this.body.body.shapes.forEach((shape, id) => {
+			var {x, y, z} = shape.relativePosition
+			this.children[id].position.set(x * WORLD_SCALE / this.scale.x, y * WORLD_SCALE / this.scale.y, z * WORLD_SCALE / this.scale.z)
+		})
+
 		this.add(bodyDebugObject(this.body, this.scale))
 		return this
 	}

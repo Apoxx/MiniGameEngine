@@ -87,7 +87,7 @@ export default class Game {
 		this.setUpWorldAndScene()
 
 		this.player = new Player(this)
-		this.player.setPosition(0,500,0)
+		this.player.setPosition(0,1000,0)
 		this.scene.add(this.player)
 
 		this.controls = new Controls(this)
@@ -108,34 +108,48 @@ export default class Game {
 
 		this.assets.objects.house.children[0].material.map = ImageUtils.loadTexture('assets/models/house/house.jpg')
 
-		var house = new Entity(this.assets.objects.house)
+		/*var house = new Entity(this.assets.objects.house)
 		house.scale.set(50, 50, 50)
-		house.addBody(this.world, 'box', false)
+		//house.addBody(this.world, 'box', false)
 
-		this.scene.add(house)
+		this.scene.add(house)*/
 
 
-		var ball = new Entity(new Mesh(new SphereGeometry(100)))
+		/*var ball = new Entity(new Mesh(new SphereGeometry(100)))
 		ball.addBody(this.world, 'sphere', true)
 		this.scene.add(ball)
-		ball.setPosition(0, 1000, 0)
+		ball.setPosition(0, 1000, 0)*/
 
 
 
-		var ball1 = new Mesh(new SphereGeometry(100))
-		var ball2 = new Mesh(new SphereGeometry(100))
+		var ball1 = new Mesh(new BoxGeometry(100, 100, 100))
+
+		var ball2 = new Mesh(new SphereGeometry(50))
+		var ball3 = new Mesh(new BoxGeometry(100, 100, 100))
+		//ball3.scale.set(0.5, 0.5, 0.5)
+		ball3.rotation.x = Math.PI / 4
+		ball3.rotation.y = Math.PI / 4
+		ball3.rotation.z = Math.PI / 4
+
 		ball2.position.z = 200
+		ball3.position.z = 400
+		//ball1.position.z = 100
+
 
 		var c = new Object3D()
-		c.add(ball1, ball2)
-		var doubleBall = new Entity(ball1)
-		doubleBall.add(ball2)
+		c.add(ball1)
+		c.add(ball2)
+		c.add(ball3)
+		var doubleBall = new Entity(c)
+		//doubleBall.add(ball2)
 		doubleBall.position.y = 500
 		doubleBall.position.x = 2000
 
+		doubleBall.scale.set(2, 2, 2)
+
 		doubleBall.addBody(this.world, 'box', true)
 
-		doubleBall.setPosition(0, 500, 0)
+		doubleBall.setPosition(500, 500, 500)
 
 		this.scene.add(doubleBall)
 
@@ -184,18 +198,12 @@ export default class Game {
 		//bodyDebugObject(bridge.body)
 
 		//this.assets.objects.houseCollisions.scale.set(100, 100, 100)
-		/*var entity = new Entity({source: this.assets.objects.house})
-		this.assets.objects.houseCollisions.scale.set(10, 10, 10)
-		entity.scale.set(100, 100, 100)
-		entity.addBody({
-			type: 'map',
-			world: this.world,
-			move: false,
-			map: this.assets.objects.houseCollisions
-		})
-		this.scene.add(entity)
+		/*var entity = new Entity(this.assets.objects.houseCollisions)
+		entity.scale.set(50, 50, 50)
+		//entity.addBody(this.world, 'box',  true)
+		this.scene.add(entity)*/
 
-		entity.setPosition(0, -500, 0)*/
+		//entity.setPosition(0, -500, 0)
 
 		//console.log(this.assets.objects.houseCollisions)
 
@@ -219,13 +227,13 @@ export default class Game {
 			this.scene.add(card);
 		}*/
 
-		for(var i = 0 ; i < 1 ; i++) {
+		/*for(var i = 0 ; i < 1 ; i++) {
 			var tonneau = new Entity(new Mesh(this.assets.three.tonneau.geometry, this.assets.three.tonneau.materials[0]))
 			tonneau.scale.set(100, 100, 100)
 			tonneau.addBody(this.world, 'sphere', true)
 			tonneau.setPosition(0, 1000, 0)
 			this.scene.add(tonneau);
-		}
+		}*/
 		
 		/*for(var i = 0 ; i < 10 ; i++) {
 			var catapulte = new Entity({geometry: this.assets.three.catapulte.geometry, material: this.assets.three.catapulte.materials[0]})

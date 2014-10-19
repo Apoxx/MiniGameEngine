@@ -39,7 +39,6 @@ export default class Player extends Entity {
 		this.raycaster.set(this.position, new Vector3(0, -1, 0))
 		var floor = this.raycaster.intersectObjects( this.game.scene.children, true )[0]
 		if(floor) {
-			console.log(floor.distance)
 			if(floor.distance < 200) return true
 		}
 		return false
